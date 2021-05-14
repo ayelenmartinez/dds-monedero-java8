@@ -44,9 +44,9 @@ public class Movimiento {
     return !esDeposito;
   }
 
-  public void agregateA(Cuenta cuenta) {
+  public void agregateA(Cuenta cuenta, Movimiento movimiento) {
     cuenta.setSaldo(calcularValor(cuenta));
-    cuenta.agregarMovimiento(fecha, monto, esDeposito);
+    cuenta.agregarMovimiento(movimiento);
   }
 
   public double calcularValor(Cuenta cuenta) {

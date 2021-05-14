@@ -38,12 +38,15 @@ public class Cuenta {
     this.movimientos = movimientos;
   }
 
-  public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
-    Movimiento movimiento = new Movimiento(fecha, cuanto, esDeposito);
-    movimientos.add(movimiento);
+  public void agregarMovimiento(Movimiento movimiento) { //CODE SMELL: Long parameter.
+   /* Movimiento movimiento = new Movimiento(fecha, cuanto, esDeposito);
+    movimientos.add(movimiento);*/
+      movimientos.add(movimiento);
+      this.setSaldo(this.getSaldo()+movimiento.getMonto());
+    }
   }
 
-  public double getMontoExtraidoA(LocalDate fecha) {
+  public double getMontoExtraidoA(LocalDate fecha) { 
     return getMovimientos().stream()
         .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
         .mapToDouble(Movimiento::getMonto)
