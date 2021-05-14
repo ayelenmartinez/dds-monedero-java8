@@ -22,12 +22,35 @@ public class Cuenta {
     saldo = montoInicial;
   }
 
+  public List<Movimiento> getMovimientos() {
+    return movimientos;
+  }
+
+  public double getSaldo() {
+    return saldo;
+  }
+
+  public void setSaldo(double saldo) {
+    this.saldo = saldo;
+  }
+
   public void setMovimientos(List<Movimiento> movimientos) {
     this.movimientos = movimientos;
   }
 
-  public void poner(double cuanto) {
-    if (cuanto <= 0) {
+  public boolean chequearSiElMontoIngresadoEsValido(double monto){
+    if (monto <= 0) {
+      throw new MontoNegativoException(monto + ": el monto a ingresar debe ser un valor positivo");
+  }
+    }
+
+  public boolean chequearSiPuedeHacerElDeposito (){
+    if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
+      throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
+  }
+
+  public void poner (double cuanto) { // CODE SMELL: Long method. Este método hace demasiadas cosas, podrían delegarse sus tareas en submétodos.
+    /*if (cuanto <= 0) {
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
 
@@ -35,6 +58,9 @@ public class Cuenta {
       throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
     }
 
+    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);*/
+    this.chequearSiElMontoIngresadoEsValido(cuanto);
+    this.chequearSiPuedeHacerElDeposito();
     new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
   }
 
@@ -66,16 +92,6 @@ public class Cuenta {
         .sum();
   }
 
-  public List<Movimiento> getMovimientos() {
-    return movimientos;
-  }
 
-  public double getSaldo() {
-    return saldo;
-  }
-
-  public void setSaldo(double saldo) {
-    this.saldo = saldo;
-  }
 
 }
