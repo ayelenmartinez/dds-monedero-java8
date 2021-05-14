@@ -38,48 +38,6 @@ public class Cuenta {
     this.movimientos = movimientos;
   }
 
-  public boolean chequearSiElMontoIngresadoEsValido(double monto){
-    if (monto <= 0) {
-      throw new MontoNegativoException(monto + ": el monto a ingresar debe ser un valor positivo");
-  }
-    }
-
-  public boolean chequearSiPuedeHacerElDeposito (){
-    if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
-      throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
-  }
-
-  public void poner (double cuanto) { // CODE SMELL: Long method. Este método hace demasiadas cosas, podrían delegarse sus tareas en submétodos.
-    /*if (cuanto <= 0) {
-      throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
-    }
-
-    if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
-      throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
-    }
-
-    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);*/
-    this.chequearSiElMontoIngresadoEsValido(cuanto);
-    this.chequearSiPuedeHacerElDeposito();
-    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
-  }
-
-  public void sacar(double cuanto) {
-    if (cuanto <= 0) {
-      throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
-    }
-    if (getSaldo() - cuanto < 0) {
-      throw new SaldoMenorException("No puede sacar mas de " + getSaldo() + " $");
-    }
-    double montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
-    double limite = 1000 - montoExtraidoHoy;
-    if (cuanto > limite) {
-      throw new MaximoExtraccionDiarioException("No puede extraer mas de $ " + 1000
-          + " diarios, límite: " + limite);
-    }
-    new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
-  }
-
   public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
     Movimiento movimiento = new Movimiento(fecha, cuanto, esDeposito);
     movimientos.add(movimiento);
@@ -93,5 +51,72 @@ public class Cuenta {
   }
 
 
+  public boolean chequearSiElMontoIngresadoEsValido(double monto) {
+    if (monto <= 0) {
+      throw new MontoNegativoException(monto + ": el monto a ingresar debe ser un valor positivo");
+    }
+  }
 
+   boolean chequearSiPuedeHacerElDeposito() {
+    if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
+      throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
+    }
+
+     boolean chequearSiSePuedeExtraerEseMonto ( double cuanto){
+      if (cuanto <= 0) {
+        throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
+      }
+      if (getSaldo() - cuanto < 0) {
+        throw new SaldoMenorException("No puede sacar mas de " + getSaldo() + " $");
+      }
+    }
+
+    public boolean chequearSiLlegoAlLimiteDeHoy(double cuanto){
+      double montoExtraidoHoy = this.getMontoExtraidoA(LocalDate.now());
+      double limite = 1000 - montoExtraidoHoy;
+      if (cuanto > limite) {
+        throw new MaximoExtraccionDiarioException("No puede extraer mas de $ " + 1000
+            + " diarios, límite: " + limite);
+      }
+
+      public void poner ( double cuanto)
+      { // CODE SMELL: Long method. Este método hace demasiadas cosas, podrían delegarse sus tareas en submétodos.
+    /*if (cuanto <= 0) {
+      throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
+    }
+
+    if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
+      throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
+    }
+
+    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);*/
+        this.chequearSiElMontoIngresadoEsValido(cuanto);
+        this.chequearSiPuedeHacerElDeposito();
+        new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+      }
+
+      public void sacar(double cuanto){ //CODE SMELL: Long method, igual que el metodo poner.
+    /*if (cuanto <= 0) {
+      throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
+    }
+    if (getSaldo() - cuanto < 0) {
+      throw new SaldoMenorException("No puede sacar mas de " + getSaldo() + " $");
+    }
+    double montoExtraidoHoy = getMontoExtraidoA(LocalDate.now());
+    double limite = 1000 - montoExtraidoHoy;
+    if (cuanto > limite) {
+      throw new MaximoExtraccionDiarioException("No puede extraer mas de $ " + 1000
+          + " diarios, límite: " + limite);
+    }
+    new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);*/
+
+        this.chequearSiSePuedeExtraerEseMonto(cuanto);
+        this.chequearSiLlegoAlLimiteDeHoy(cuanto);
+        new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
+
+      }
+
+
+    }
+  }
 }
