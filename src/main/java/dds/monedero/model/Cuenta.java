@@ -46,7 +46,7 @@ public class Cuenta {
     }
   }
 
-  public double getMontoExtraidoA(LocalDate fecha) { 
+  public double getMontoExtraidoA(LocalDate fecha) {
     return getMovimientos().stream()
         .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
         .mapToDouble(Movimiento::getMonto)
@@ -93,9 +93,10 @@ public class Cuenta {
     }
 
     new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);*/
+
         this.chequearSiElMontoIngresadoEsValido(cuanto);
         this.chequearSiPuedeHacerElDeposito();
-        new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+        new Deposito(LocalDate.now(), cuanto).agregateA(this); //CODE SMELLS: Type tests.
       }
 
       public void sacar(double cuanto){ //CODE SMELL: Long method, igual que el metodo poner.
@@ -115,7 +116,7 @@ public class Cuenta {
 
         this.chequearSiSePuedeExtraerEseMonto(cuanto);
         this.chequearSiLlegoAlLimiteDeHoy(cuanto);
-        new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
+        new Extraccion(LocalDate.now(), cuanto).agregateA(this); //CODE SMELLS: Type tests.
 
       }
 
